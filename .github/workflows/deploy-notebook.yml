@@ -1,3 +1,16 @@
+- name: Diagnóstico token origen
+run: |
+  T='${{ secrets.DATABRICKS_ORIGIN_TOKEN }}'
+  H='${{ secrets.DATABRICKS_ORIGIN_HOST }}'
+  H="${H%/}"
+  echo "Largo del token: ${#T}"
+  echo "Empieza con: ${T:0:4}"
+  if [[ "$T" =~ [[:space:]] ]]; then echo "⚠️ El token tiene espacios o saltos de línea"; fi
+  if [[ "$T" == Bearer* ]]; then echo "⚠️ El token incluye la palabra Bearer"; fi
+  echo "Host termina en: ...${H: -25}"
+  echo "Prueba de autenticación:"
+  curl -s -w "\nHTTP %{http_code}\n" -H "Authorization: Bearer $T" "$H/api/2.0/preview/scim/v2/Me" | head -c 400
+
 name: Dynamic Databricks Notebook Deploy
 
 on:
