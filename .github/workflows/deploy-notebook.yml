@@ -84,7 +84,7 @@ jobs:
           -H "Authorization: Bearer $DEST_TOKEN" \
           "$DEST_HOST/api/2.1/jobs/list?name=$WORKFLOW_NAME")
 
-        # Puede haber más de un job con el mismo nombre: se eliminan todos
+        # Puede haber más de un job con el mismo nombre: se eliminan todos.
         existing_job_ids=$(echo "$workflows_response" | jq -r --arg name "$WORKFLOW_NAME" '.jobs[]? | select(.settings.name == $name) | .job_id')
 
         if [ -n "$existing_job_ids" ]; then
